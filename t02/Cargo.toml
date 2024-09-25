@@ -4,5 +4,6 @@ name    = "t02"
 version = "0.1.0"
 
 [dependencies]
+anyhow      = { workspace = true }
 expect-test = { workspace = true }
 itertools   = { workspace = true }
