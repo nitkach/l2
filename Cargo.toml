@@ -1,5 +1,5 @@
 [workspace]
-members  = ["t01", "t02"]
+members  = ["t01", "t02", "t03"]
 resolver = "2"
 
 

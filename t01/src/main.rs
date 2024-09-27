@@ -1,3 +1,5 @@
+use std::process::ExitCode;
+
 use anyhow::Result;
 use camino::Utf8PathBuf;
 use clap::Parser;
@@ -27,6 +29,7 @@ struct Flags {
     /// Count number of words. [Default - If no flag is specified, this flag is selected]
     words: bool,
 }
+
 fn count_objects(args: Args) -> Result<usize> {
     let file_content = std::fs::read_to_string(args.path)?;
     let flags = (args.flags.characters, args.flags.lines, args.flags.words);
@@ -40,12 +43,18 @@ fn count_objects(args: Args) -> Result<usize> {
     Ok(number)
 }
 
-fn main() {
+fn main() -> ExitCode {
     let args = Args::parse();
 
     match count_objects(args) {
-        Ok(number) => println!("{number}"),
-        Err(err) => eprintln!("{err}"),
+        Ok(number) => {
+            println!("{number}");
+            ExitCode::SUCCESS
+        }
+        Err(err) => {
+            eprintln!("{err}");
+            ExitCode::FAILURE
+        }
     }
 }
 
