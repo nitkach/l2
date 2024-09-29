@@ -1,0 +1,8 @@
+[package]
+edition = "2021"
+name    = "t04"
+version = "0.1.0"
+
+[dependencies]
+expect-test = { workspace = true }
+itertools   = { workspace = true }
