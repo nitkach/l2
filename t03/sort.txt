@@ -1,6 +1,6 @@
-skittles,4
-candy,6
-vanille,1
-marshmallow,3
-apples,5
-lavender,2
+skittles,-4M,jan
+candy,-6k,jun
+vanille,1B,feb
+marshmallow,-3M,september
+apples,-5k,May
+lavender,-2M,March
