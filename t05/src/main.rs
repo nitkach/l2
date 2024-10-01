@@ -6,6 +6,8 @@ use itertools::Itertools;
 use lazy_regex::Regex;
 use std::{fmt::Debug, process::ExitCode};
 
+/// Filtering utility similar to the grep
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Parser)]
 struct Args {
     pattern: String,
@@ -47,13 +49,14 @@ struct Args {
 }
 
 struct SimpleGrep {
-    invert: bool,
-
-    line_num: bool,
-
+    /// Regex with user pattern
     regex: Regex,
-
+    /// Type of output
     output: Output,
+    /// Invert matched lines
+    invert: bool,
+    /// Provide a column number
+    line_num: bool,
 }
 
 enum Output {
@@ -112,10 +115,10 @@ impl SimpleGrep {
         };
 
         Ok(Self {
-            invert,
-            line_num,
             regex,
             output,
+            invert,
+            line_num,
         })
     }
 }
@@ -146,6 +149,7 @@ impl SimpleGrep {
         result
     }
 
+    /// Filter lines, that is matching to pattern and return their index
     fn grep<'line>(&self, contents: &[&'line str]) -> Vec<(usize, &'line str)> {
         contents
             .iter()
@@ -161,6 +165,7 @@ impl SimpleGrep {
             .collect()
     }
 
+    /// Prepare lines for output
     fn prepare_lines(&self, matched_lines: &[Line<'_>]) -> String {
         matched_lines
             .iter()
@@ -177,34 +182,35 @@ impl SimpleGrep {
             .join("\n")
     }
 
+    /// Get context lines near matched lines, when any arg (`-B`, `-A`, `-C`) is provided
     fn process_context_lines<'line>(
         contents: &[&'line str],
         matched_lines: &[(usize, &str)],
         num_before: usize,
         num_after: usize,
     ) -> Vec<Line<'line>> {
-        let x = matched_lines
+        let total_lines = contents.len();
+
+        // user can specify any number `-A=5`, `-B=1000`...
+        // and it may be that these intervals will intersect next to each other
+        // using unique(), we can fix this
+        let lines_indexes = matched_lines
             .iter()
             .copied()
             .flat_map(|(line_num, _)| {
-                let start = if num_before > line_num {
-                    0
-                } else {
-                    line_num - num_before
-                };
+                let start = line_num.saturating_sub(num_before);
 
-                let end = if line_num + num_after + 1 > contents.len() {
-                    contents.len() - 1
-                } else {
-                    line_num + num_after
-                };
+                let end = (line_num + num_after).min(total_lines - 1);
 
                 start..=end
             })
             .unique()
             .collect::<Vec<_>>();
 
-        x.iter()
+        // if the line index is in matched_line indexes,
+        // then it is Line::Matched(...), otherwise it is a Line::Context(...)
+        lines_indexes
+            .iter()
             .map(|&line_num| {
                 let line = *contents.get(line_num).expect("line exist");
                 match matched_lines.binary_search_by(|(probe, _)| probe.cmp(&line_num)) {
@@ -247,4 +253,168 @@ fn main() -> ExitCode {
     }
 
     ExitCode::SUCCESS
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn smoke_test() {
+        let contents = "\
+        apple\n\
+        marshmallow\n\
+        lavender\n\
+        vanille\n\
+        rainbow\n\
+        candy\
+        ";
+
+        let simple_grep = SimpleGrep::builder()
+            .pattern(r"lavender|vanille".to_owned())
+            .count(false)
+            .maybe_after(Some(2))
+            .maybe_before(Some(1))
+            .maybe_context(None)
+            .ignore_case(false)
+            .invert(false)
+            .fixed(false)
+            .line_num(true)
+            .build()
+            .unwrap();
+
+        let matches = simple_grep.process(contents);
+
+        expect_test::expect![[r"
+            2-marshmallow
+            3:lavender
+            4:vanille
+            5-rainbow
+            6-candy"]]
+        .assert_eq(&matches);
+    }
+
+    #[test]
+    fn test_count() {
+        let contents = "\
+        apple\n\
+        marshmallow\n\
+        lavender\n\
+        vanille\n\
+        rainbow\n\
+        candy\
+        ";
+
+        let simple_grep = SimpleGrep::builder()
+            .pattern(r"lavender|vanille".to_owned())
+            .count(true)
+            .maybe_after(Some(2))
+            .maybe_before(Some(1))
+            .maybe_context(None)
+            .ignore_case(false)
+            .invert(false)
+            .fixed(false)
+            .line_num(true)
+            .build()
+            .unwrap();
+
+        let matches = simple_grep.process(contents);
+
+        expect_test::expect!["2"].assert_eq(&matches);
+    }
+
+    #[test]
+    fn test_invert() {
+        let contents = "\
+        apple\n\
+        marshmallow\n\
+        lavender\n\
+        vanille\n\
+        rainbow\n\
+        candy\
+        ";
+
+        let simple_grep = SimpleGrep::builder()
+            .pattern(r"lavender|vanille".to_owned())
+            .count(false)
+            .maybe_after(None)
+            .maybe_before(None)
+            .maybe_context(None)
+            .ignore_case(false)
+            .invert(true)
+            .fixed(false)
+            .line_num(true)
+            .build()
+            .unwrap();
+
+        let matches = simple_grep.process(contents);
+
+        expect_test::expect![[r"
+            1:apple
+            2:marshmallow
+            5:rainbow
+            6:candy"]]
+        .assert_eq(&matches);
+    }
+
+    #[test]
+    fn test_invert_count() {
+        let contents = "\
+        apple\n\
+        marshmallow\n\
+        lavender\n\
+        vanille\n\
+        rainbow\n\
+        candy\
+        ";
+
+        let simple_grep = SimpleGrep::builder()
+            .pattern(r"lavender|vanille".to_owned())
+            .count(true)
+            .maybe_after(None)
+            .maybe_before(None)
+            .maybe_context(None)
+            .ignore_case(false)
+            .invert(true)
+            .fixed(false)
+            .line_num(true)
+            .build()
+            .unwrap();
+
+        let matches = simple_grep.process(contents);
+
+        expect_test::expect!["4"].assert_eq(&matches);
+    }
+
+    #[test]
+    fn test_case_insensetive() {
+        let contents = "\
+        apple\n\
+        marshmallow\n\
+        lAVeNdEr\n\
+        VANILLE\n\
+        rainbow\n\
+        candy\
+        ";
+
+        let simple_grep = SimpleGrep::builder()
+            .pattern(r"lavender|vanille".to_owned())
+            .count(false)
+            .maybe_after(None)
+            .maybe_before(None)
+            .maybe_context(None)
+            .ignore_case(true)
+            .invert(false)
+            .fixed(false)
+            .line_num(true)
+            .build()
+            .unwrap();
+
+        let matches = simple_grep.process(contents);
+
+        expect_test::expect![[r"
+            3:lAVeNdEr
+            4:VANILLE"]]
+        .assert_eq(&matches);
+    }
 }

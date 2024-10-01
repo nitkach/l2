@@ -383,9 +383,24 @@ dependencies = [
  "bon",
  "camino",
  "clap",
+ "expect-test",
  "itertools",
  "lazy-regex",
 ]
+
+[[package]]
+name = "t06"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "expect-test",
+ "itertools",
+]
+
+[[package]]
+name = "t07"
+version = "0.1.0"
 
 [[package]]
 name = "unicode-ident"
