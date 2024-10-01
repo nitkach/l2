@@ -1,0 +1,12 @@
+[package]
+edition = "2021"
+name    = "t05"
+version = "0.1.0"
+
+[dependencies]
+anyhow     = { workspace = true }
+bon        = { workspace = true }
+camino     = { workspace = true }
+clap       = { workspace = true }
+itertools  = { workspace = true }
+lazy-regex = { version = "3.3" }
