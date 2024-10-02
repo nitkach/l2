@@ -1,8 +1,7 @@
-use std::{io::BufRead, process::ExitCode};
-
 use anyhow::Result;
 use clap::Parser;
 use itertools::Itertools;
+use std::{io::BufRead, process::ExitCode};
 
 /// Utility similar to the console command `cut`
 #[derive(Debug, Parser)]
@@ -21,6 +20,7 @@ struct Args {
 }
 
 fn run(args: Args) -> Result<()> {
+    // "3,1,2" -> [3, 1, 2]
     let fields = args
         .fields
         .split(',')

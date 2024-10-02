@@ -1,5 +1,5 @@
 [workspace]
-members  = ["t01", "t02", "t03", "t04", "t05", "t06", "t07"]
+members  = ["t01", "t02", "t03", "t04", "t05", "t06", "t07", "t08", "t09"]
 resolver = "2"
 
 
@@ -10,4 +10,7 @@ camino      = { version = "1.1" }
 clap        = { version = "4.5", features = ["derive"] }
 expect-test = "1.5.0"
 itertools   = "0.13"
+serde       = { version = "1.0", features = ["serde_derive"] }
+serde_json  = { version = "1.0" }
 tokio       = { version = "1.40", features = ["full"] }
+tokio-util  = "0.7.12"

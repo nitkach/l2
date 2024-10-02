@@ -1,0 +1,8 @@
+[package]
+edition = "2021"
+name    = "t08"
+version = "0.1.0"
+
+[dependencies]
+anyhow    = { workspace = true }
+itertools = { workspace = true }

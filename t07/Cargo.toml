@@ -1,0 +1,16 @@
+[package]
+edition = "2021"
+name    = "t07"
+version = "0.1.0"
+
+[dependencies]
+anyhow      = { workspace = true }
+camino      = { workspace = true }
+clap        = { workspace = true }
+dashmap     = "6.1.0"
+expect-test = { workspace = true }
+itertools   = { workspace = true }
+serde       = { workspace = true }
+serde_json  = { workspace = true }
+tokio       = { workspace = true }
+tokio-util  = { workspace = true }
