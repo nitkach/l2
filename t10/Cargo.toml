@@ -1,6 +1,11 @@
 [package]
-name = "t10"
-version = "0.1.0"
 edition = "2021"
+name    = "t10"
+version = "0.1.0"
 
 [dependencies]
+anyhow     = { workspace = true }
+clap       = { workspace = true }
+itertools  = { workspace = true }
+tokio      = { workspace = true }
+tokio-util = { workspace = true }
