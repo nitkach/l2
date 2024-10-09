@@ -139,7 +139,7 @@ mod tests {
     use super::*;
 
     fn assert_unpack_with_iterators(actual: &str, expected: &Expect) {
-        let actual = unpack_string_with_iterators(actual).unwrap();
+        let actual = unpack_string_with_iterators(actual).expect("no Result::Err in tests");
         expected.assert_eq(&actual);
     }
 

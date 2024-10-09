@@ -476,7 +476,9 @@ mod tests {
             .unique(false)
             .build();
 
-        let sorted = sort.sort_contents(contents()).unwrap();
+        let sorted = sort
+            .sort_contents(contents())
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -510,7 +512,9 @@ mod tests {
             .unique(false)
             .build();
 
-        let sorted = sort.sort_contents(contents()).unwrap();
+        let sorted = sort
+            .sort_contents(contents())
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -544,7 +548,9 @@ mod tests {
             .unique(false)
             .build();
 
-        let sorted = sort.sort_contents(contents()).unwrap();
+        let sorted = sort
+            .sort_contents(contents())
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -578,7 +584,9 @@ mod tests {
             .unique(false)
             .build();
 
-        let sorted = sort.sort_contents(contents()).unwrap();
+        let sorted = sort
+            .sort_contents(contents())
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -624,7 +632,9 @@ mod tests {
         9,ac\n\
         ";
 
-        let sorted = sort.sort_contents(contents).unwrap();
+        let sorted = sort
+            .sort_contents(contents)
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -667,7 +677,9 @@ mod tests {
         0,a\n\
         ";
 
-        let sorted = sort.sort_contents(contents).unwrap();
+        let sorted = sort
+            .sort_contents(contents)
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -694,7 +706,9 @@ mod tests {
             .unique(false)
             .build();
 
-        let sorted = sort.sort_contents(contents()).unwrap();
+        let sorted = sort
+            .sort_contents(contents())
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,
@@ -728,7 +742,9 @@ mod tests {
             .unique(false)
             .build();
 
-        let sorted = sort.sort_contents(contents()).unwrap();
+        let sorted = sort
+            .sort_contents(contents())
+            .expect("no Result::Err in tests");
 
         assert_expected(
             &sorted,

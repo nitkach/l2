@@ -1,5 +1,5 @@
 fn main() {
-    // creating Multi-Producer, Single-Consumer FIFO queue;
+    // creating unbounded Multi-Producer, Single-Consumer FIFO queue channel;
     // binding Sender and Receiver to variables
     let (sender, receiver) = std::sync::mpsc::channel::<i32>();
 

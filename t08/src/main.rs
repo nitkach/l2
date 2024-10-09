@@ -26,7 +26,7 @@ fn get_input() -> String {
     std::io::stdout().flush().unwrap();
 
     let mut input = String::new();
-    std::io::stdin().read_line(&mut input).unwrap();
+    std::io::stdin().read_line(&mut input).expect("valid UTF-8");
     input
 }
 
@@ -98,10 +98,13 @@ fn handle_command(command: &str) {
 
 fn handle_pipeline(commands: &[&str]) {
     let mut previous_command = None;
+    let last_command = *commands.last().expect("non-empty due to previous check");
 
     for command in commands {
         let args = command.split_whitespace().collect::<Vec<_>>();
-        let (command, args) = args.split_first().unwrap();
+        let Some((command, args)) = args.split_first() else {
+            continue;
+        };
 
         let mut child = std::process::Command::new(command)
             .args(args)
@@ -111,7 +114,7 @@ fn handle_pipeline(commands: &[&str]) {
                     .map(Stdio::from)
                     .unwrap_or_else(std::process::Stdio::inherit),
             )
-            .stdout(if *command == *commands.last().unwrap() {
+            .stdout(if *command == last_command {
                 std::process::Stdio::inherit()
             } else {
                 std::process::Stdio::piped()
@@ -121,6 +124,8 @@ fn handle_pipeline(commands: &[&str]) {
 
         previous_command = child.stdout.take();
 
-        child.wait().unwrap();
+        child
+            .wait()
+            .unwrap_or_else(|_| panic!("error occured in command: {command}"));
     }
 }

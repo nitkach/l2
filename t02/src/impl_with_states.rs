@@ -153,7 +153,7 @@ mod tests {
 
     #[track_caller]
     fn assert_unpack_with_state(actual: &str, expected: &Expect) {
-        let actual = unpack_string_with_state(actual).unwrap();
+        let actual = unpack_string_with_state(actual).expect("no Result::Err in tests");
         expected.assert_eq(&actual);
     }
 

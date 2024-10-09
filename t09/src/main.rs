@@ -86,7 +86,7 @@ async fn run(args: Args) -> Result<()> {
 fn get_links(html: &str, current_url: &Url) -> HashSet<Url> {
     let mut links = HashSet::new();
     let document = Html::parse_document(html);
-    let links_selector = Selector::parse("a, script, link").unwrap();
+    let links_selector = Selector::parse("a, script, link").expect("valid str for selector");
 
     for element in document.select(&links_selector) {
         if let Some(url) = element.attr("href").or(element.attr("src")) {

@@ -281,7 +281,7 @@ mod tests {
             .fixed(false)
             .line_num(true)
             .build()
-            .unwrap();
+            .expect("no Result::Err in tests");
 
         let matches = simple_grep.process(contents);
 
@@ -316,7 +316,7 @@ mod tests {
             .fixed(false)
             .line_num(true)
             .build()
-            .unwrap();
+            .expect("no Result::Err in tests");
 
         let matches = simple_grep.process(contents);
 
@@ -345,7 +345,7 @@ mod tests {
             .fixed(false)
             .line_num(true)
             .build()
-            .unwrap();
+            .expect("no Result::Err in tests");
 
         let matches = simple_grep.process(contents);
 
@@ -379,7 +379,7 @@ mod tests {
             .fixed(false)
             .line_num(true)
             .build()
-            .unwrap();
+            .expect("no Result::Err in tests");
 
         let matches = simple_grep.process(contents);
 
@@ -408,7 +408,7 @@ mod tests {
             .fixed(false)
             .line_num(true)
             .build()
-            .unwrap();
+            .expect("no Result::Err in tests");
 
         let matches = simple_grep.process(contents);
 
