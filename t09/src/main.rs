@@ -130,8 +130,6 @@ fn is_file_to_skip(url: &Url) -> bool {
 async fn main() -> ExitCode {
     let args = Args::parse();
 
-    dbg!(&args);
-
     if let Err(err) = run(args).await {
         eprintln!("{err:?}");
         return ExitCode::FAILURE;
